@@ -1,0 +1,601 @@
+/* --- 1. Variáveis de Design e Reset Global (Tema Claro: DASHBOARD SAAS) --- */
+:root {
+    /* Cores Principais */
+    --primary-color: #007bff; /* Azul vibrante para botões principais */
+    --accent-color: #00bcd4; /* Ciano/Teal moderno para destaques */
+    --error-color: #dc3545;
+
+    /* Layout e Fundo */
+    --bg-sidebar: #2c3e50; /* Azul Marinho Profundo (Fixo) */
+    --bg-page: #f4f7f6; /* Fundo principal claro e limpo */
+    --bg-card: #ffffff; /* Fundo dos cards brancos */
+    --bg-display: #ecf0f1; /* Fundo do display da calculadora */
+
+    /* Texto */
+    --text-primary: #2c3e50; /* Texto principal escuro */
+    --text-secondary: #7f8c8d; /* Texto secundário/hint */
+    --text-on-sidebar: #ecf0f1; /* Texto para fundo escuro */
+
+    /* Sidebar Navigation */
+    --nav-link-hover: #34495e; /* Sidebar link hover */
+    --nav-link-active: var(--accent-color);
+    --nav-text-active: var(--bg-sidebar);
+
+    /* Efeitos e Componentes */
+    --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --border-radius-base: 12px;
+    --input-bg: #ecf0f1;
+}
+
+/* --- 2. Variáveis do Tema ESCURO (Dark Mode: DASHBOARD SAAS DARK) --- */
+body.dark-mode {
+    --primary-color: #4da6ff;
+    --accent-color: #00bcd4;
+    --error-color: #ef5350;
+
+    /* Layout e Fundo (apenas do conteúdo) */
+    /* A sidebar mantém as cores do :root para garantir alto contraste */
+    --bg-page: #1a202c;
+    --bg-card: #2d3748;
+    --bg-display: #1a202c;
+
+    /* Texto */
+    --text-primary: #ecf0f1;
+    --text-secondary: #a0aec0;
+    
+    /* Sidebar Navigation (Alterando apenas o comportamento visual dos links) */
+    --nav-link-hover: #1f2a38; /* Pouco mais escuro para hover */
+    --nav-link-active: var(--accent-color);
+    --nav-text-active: #ffffff; /* Texto do link ativo mais claro */
+
+    /* Efeitos e Componentes */
+    --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --input-bg: #1f2a38;
+}
+
+
+/* --- 3. Reset e Estilos de Layout Geral --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+    transition: background-color 0.5s, color 0.5s, margin-left 0.3s;
+}
+
+/* Estrutura principal do Dashboard */
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- 4. Sidebar (Barra Lateral) --- */
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    background-color: var(--bg-sidebar); /* Sempre escuro */
+    color: var(--text-on-sidebar); /* Sempre claro */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    padding: 25px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h1 {
+    font-size: 1.8em;
+    font-weight: 800;
+    color: var(--accent-color);
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    padding: 20px 0;
+    overflow-y: auto;
+}
+
+.nav-link {
+    display: block;
+    width: 100%;
+    padding: 15px 25px;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text-on-sidebar);
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    box-shadow: none;
+}
+
+.nav-link:hover {
+    background-color: var(--nav-link-hover);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background-color: var(--nav-link-active);
+    color: var(--nav-text-active); 
+    border-left-color: var(--accent-color);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+/* --- 5. Área de Conteúdo Principal --- */
+.main-content-area {
+    flex-grow: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 10px 0;
+}
+
+.main-header h1 {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-left: 20px;
+}
+
+/* Botão de Toggle de Tema */
+.theme-toggle {
+    background: var(--nav-link-hover);
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: var(--text-on-sidebar);
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    background: var(--nav-link-active);
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 1.5em;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+/* Conteúdo das Ferramentas */
+.tool-section-wrapper {
+    max-width: 100%;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.6s ease-out;
+}
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content h2 {
+    font-size: 2.2em;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    font-weight: 800;
+}
+
+/* --- 6. Estilos de Cards, Formulários e Resultados (Comum) --- */
+
+.tool-container {
+    display: flex;
+    gap: 30px;
+    min-height: 450px; 
+}
+
+.main-tool-area {
+    flex: 2; 
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.tool-hub {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    gap: 25px;
+}
+
+.tool-card {
+    background-color: var(--bg-card);
+    padding: 30px;
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-subtle);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.tool-card h3 {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: block;
+    font-size: 0.95em;
+}
+
+input[type="number"], 
+input[type="text"], 
+input[type="date"], 
+input[type="range"],
+select {
+    background: var(--input-bg);
+    color: var(--text-primary);
+    border: 1px solid #ccc;
+    padding: 12px 18px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+input[type="number"]:focus, input[type="text"]:focus, input[type="date"]:focus, select:focus {
+    border-color: var(--primary-color);
+    background-color: var(--bg-card);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.grid-inputs {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 15px;
+    align-items: center;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* Botões */
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+button:hover {
+    background-color: var(--primary-color);
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+}
+
+.secondary-btn {
+    background-color: var(--text-secondary);
+    box-shadow: 0 4px 10px rgba(127, 140, 141, 0.2);
+}
+
+.secondary-btn:hover {
+    background-color: #6c7a89;
+    box-shadow: 0 6px 15px rgba(127, 140, 141, 0.3);
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Estilos de Resultado (Com Animação) */
+.result-label {
+    margin-top: 15px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 1em;
+}
+
+.result-card .result-value {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    display: inline-block; /* Necessário para animação */
+    transition: all 0.2s ease-in-out;
+}
+.result-card .result-value.primary { 
+    color: var(--primary-color);
+    font-size: 2.5em; 
+    transition: font-size 0.3s; 
+}
+.result-card .result-value.large {
+    font-size: 1.8em;
+    color: var(--primary-color);
+}
+
+.result {
+    display: block;
+    margin-top: 15px;
+    font-size: 1.2em;
+    font-weight: 600;
+    min-height: 1.5em;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Animação de Pulso */
+@keyframes pulsate {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.result-value.pulsate, .result.pulsate {
+    animation: pulsate 0.5s ease-out;
+    color: var(--accent-color) !important;
+}
+
+/* --- 7. Calculadora Padrão (Grid Layout) --- */
+.calculator {
+    max-width: 400px;
+}
+
+#display {
+    background-color: var(--bg-display);
+    color: var(--text-primary);
+    padding: 25px 20px;
+    font-size: 2.5em;
+    text-align: right;
+    border-radius: var(--border-radius-base);
+    margin-bottom: 20px;
+    height: 90px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    overflow-x: auto;
+    transition: all 0.2s ease-in-out;
+}
+#display.pulsate {
+    animation: pulsate 0.5s ease-out;
+}
+/* ... [Mantenha o restante dos estilos da calculadora, histórico e responsividade] ... */
+
+.keys {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.keys button {
+    padding: 20px 10px;
+    font-size: 1.4em;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-subtle);
+    transition: all 0.1s ease;
+}
+
+.keys button:hover {
+    background-color: #d8e0e5;
+}
+
+.dark-mode .keys button {
+    background-color: var(--bg-card);
+}
+
+.dark-mode .keys button:hover {
+    background-color: #3f4a5a;
+}
+
+.operator, .clear, .equals {
+    color: white;
+    background-color: var(--accent-color);
+    box-shadow: 0 4px 10px rgba(0, 188, 212, 0.2);
+}
+
+.operator:hover, .clear:hover, .equals:hover {
+    background-color: #00a8c2;
+    box-shadow: 0 6px 15px rgba(0, 188, 212, 0.3);
+}
+
+.equals {
+    background-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+.equals:hover {
+    background-color: var(--primary-dark);
+}
+
+/* --- 8. Painel de Histórico --- */
+.history-panel {
+    flex: 1;
+    min-width: 250px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.history-list {
+    margin-top: 15px;
+    padding: 10px;
+}
+
+.history-empty {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px;
+}
+
+.history-item {
+    background-color: var(--bg-page);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.history-item:hover {
+    background-color: var(--input-bg);
+}
+
+.dark-mode .history-item {
+    background-color: #242d3c;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .history-item:hover {
+    background-color: #3a475b;
+}
+
+.history-item .equation {
+    color: var(--text-secondary);
+}
+.history-item .result-history {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-top: 5px;
+}
+
+.clear-history-btn {
+    background-color: var(--error-color);
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+}
+
+.clear-history-btn:hover {
+    background-color: #c82333;
+    box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+}
+
+/* IMC e Tabelas */
+.imc-table-card table {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+}
+.imc-table-card th, .imc-table-card td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+.dark-mode .imc-table-card th, .dark-mode .imc-table-card td {
+    border-bottom: 1px solid #3c4554;
+}
+
+/* --- 9. RESPONSIVIDADE --- */
+
+/* Tablet e Mobile (Sidebar Off-Canvas) */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 220px;
+        min-width: 220px;
+    }
+    .main-content-area {
+        padding: 20px;
+    }
+    .tool-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .history-panel {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -250px; /* Esconde a sidebar */
+        transition: left 0.3s ease-in-out;
+        box-shadow: none; /* Remove a sombra quando escondida */
+    }
+
+    /* Quando a classe 'sidebar-open' é adicionada ao body, mostra a sidebar */
+    body.sidebar-open .sidebar {
+        left: 0;
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .menu-toggle {
+        display: block; /* Mostra o botão hamburger */
+    }
+    
+    .main-header {
+        position: sticky;
+        top: 0;
+        background-color: var(--bg-page);
+        z-index: 500;
+        padding: 15px 0;
+    }
+
+    .main-header h1 {
+        font-size: 1.5em;
+        margin-left: 0;
+    }
+
+    .tool-hub {
+        grid-template-columns: 1fr;
+    }
+    
+    .history-panel {
+        order: 2; /* Coloca o histórico abaixo da ferramenta principal */
+    }
+    
+    .dashboard-layout {
+        overflow-x: hidden; /* Evita scroll horizontal ao abrir a sidebar */
+    }
+}

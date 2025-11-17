@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub de Ferramentas Profissional</title>
+
+    <link rel="icon" type="image/png" href="flaticon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <meta property="og:title" content="Hub de Ferramentas - A Sua Suite de Utilidades Online">
+    <meta property="og:description" content="Calculadoras, Conversores, Gerador de Senhas e mais. Tudo em um só lugar.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="[O link final do seu site após hospedar]">
+    <meta property="og:image" content="https://br.pinterest.com/pin/459015387019686329/">
+    <meta property="og:site_name" content="Meu Hub de Ferramentas">
+
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar" id="sidebar">
+            <header class="sidebar-header">
+                <h1>Hub Tools</h1>
+            </header>
+
+            <nav class="sidebar-nav">
+                <button class="nav-link active" data-tab="padrao">📊 Calculadora Padrão</button>
+                <button class="nav-link" data-tab="porcentagem">🧮 Porcentagem</button>
+                <button class="nav-link" data-tab="conversor">📏 Conversor de Unidades</button>
+                <button class="nav-link" data-tab="imc">🏋️‍♀️ Calculadora IMC</button> 
+                <button class="nav-link" data-tab="senha">🔒 Gerador de Senha</button>
+                <button class="nav-link" data-tab="gorjeta">💰 Divisão/Gorjeta</button>
+                <button class="nav-link" data-tab="juros">📈 Juros Compostos</button>
+                <button class="nav-link" data-tab="combustivel">⛽ Consumo Combustível</button>
+                <button class="nav-link" data-tab="data">📅 Data/Idade</button>
+                <button class="nav-link" data-tab="moedas">💵 Conversor de Moedas</button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle" title="Alternar entre modo Claro e Escuro">
+                    ☀️
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content-area">
+            <header class="main-header">
+                <button class="menu-toggle" id="menu-toggle" title="Abrir Menu">☰</button>
+                <h1>Meu Hub de Ferramentas</h1>
+            </header>
+
+            <section class="tool-section-wrapper">
+
+                <div class="tab-content active" id="padrao">
+                    <h2>Calculadora Padrão</h2>
+                    <div class="tool-container">
+                        <div class="main-tool-area">
+                            <div class="calculator tool-card">
+                                <input type="text" id="display" readonly placeholder="0">
+                                <div class="keys" id="calculator-keys">
+                                    <button class="operator clear" data-action="clear">C</button>
+                                    <button class="operator" data-value="(">(</button>
+                                    <button class="operator" data-value=")">)</button>
+                                    <button class="operator" data-action="operator" data-value="/">÷</button>
+                                    <button data-value="7">7</button>
+                                    <button data-value="8">8</button>
+                                    <button data-value="9">9</button>
+                                    <button class="operator" data-action="operator" data-value="*">×</button>
+                                    <button data-value="4">4</button>
+                                    <button data-value="5">5</button>
+                                    <button data-value="6">6</button>
+                                    <button class="operator" data-action="operator" data-value="-">−</button>
+                                    <button data-value="1">1</button>
+                                    <button data-value="2">2</button>
+                                    <button data-value="3">3</button>
+                                    <button class="operator" data-action="operator" data-value="+">+</button>
+                                    <button data-value="0">0</button>
+                                    <button data-value=".">.</button>
+                                    <button class="operator" data-action="delete">⌫</button>
+                                    <button class="equals" data-action="calculate">=</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de Cálculos</h3>
+                            <div id="history-padrao" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-padrao">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="porcentagem">
+                    <h2>Calculadora de Porcentagem</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Quanto é X% de Y?</h3>
+                                <div class="form-group grid-inputs">
+                                    <input type="number" id="perc-val" placeholder="X">
+                                    <span>% de</span>
+                                    <input type="number" id="perc-total" placeholder="Y">
+                                </div>
+                                <button id="btn-calc-perc">Calcular</button>
+                                <p class="result" id="perc-result"></p>
+                            </div>
+                            <div class="tool-card">
+                                <h3>X é qual porcentagem de Y?</h3>
+                                <div class="form-group grid-inputs">
+                                    <input type="number" id="is-val" placeholder="X">
+                                    <span>é qual % de</span>
+                                    <input type="number" id="is-total" placeholder="Y">
+                                </div>
+                                <button id="btn-calc-is-perc">Calcular</button>
+                                <p class="result" id="is-perc-result"></p>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de Porcentagem</h3>
+                            <div id="history-porcentagem" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-porcentagem">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="conversor">
+                    <h2>Conversor Métrico/Imperial</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Selecione a conversão</h3>
+                                <div class="form-group">
+                                    <label for="conv-type">Converter de:</label>
+                                    <select id="conv-type">
+                                        <option value="km-miles">Quilômetros para Milhas</option>
+                                        <option value="miles-km">Milhas para Quilômetros</option>
+                                        <option value="kg-lbs">Quilos para Libras</option>
+                                        <option value="lbs-kg">Libras para Quilos</option>
+                                        <option value="cm-in">Centímetros para Polegadas</option>
+                                        <option value="in-cm">Polegadas para Centímetros</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="conv-input">Valor:</label>
+                                    <input type="number" id="conv-input" placeholder="Insira o valor">
+                                </div>
+                                <button id="btn-conv">Converter</button>
+                                <p class="result" id="conv-result"></p>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de Conversão</h3>
+                            <div id="history-conversor" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-conversor">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="imc">
+                    <h2>Calculadora de IMC (Índice de Massa Corporal)</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Calcule seu IMC</h3>
+                                <div class="form-group" id="peso-group">
+                                    <label for="peso">Peso (kg):</label>
+                                    <input type="number" id="peso" placeholder="Ex: 75" required>
+                                </div>
+                                <div class="form-group" id="altura-group">
+                                    <label for="altura">Altura (m):</label>
+                                    <input type="number" id="altura" placeholder="Ex: 1.75" step="0.01" required>
+                                </div>
+                                <button id="btn-calc-imc">Calcular IMC</button>
+                                <p class="result" id="imc-result"></p>
+                            </div>
+                            <div class="tool-card imc-table-card">
+                                <h4>Classificação do IMC (OMS)</h4>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>IMC (kg/m²)</th>
+                                            <th>Classificação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Abaixo de 18.5</td><td>Abaixo do Peso</td></tr>
+                                        <tr><td>18.5 a 24.9</td><td>Peso Normal</td></tr>
+                                        <tr><td>25.0 a 29.9</td><td>Sobrepeso</td></tr>
+                                        <tr><td>30.0 a 34.9</td><td>Obesidade Grau I</td></tr>
+                                        <tr><td>35.0 a 39.9</td><td>Obesidade Grau II (Severa)</td></tr>
+                                        <tr><td>Acima de 40.0</td><td>Obesidade Grau III (Mórbida)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de IMC</h3>
+                            <div id="history-imc" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-imc">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="senha">
+                    <h2>Gerador de Senha Segura</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Opções de Geração</h3>
+                                <div class="form-group">
+                                    <label for="pass-result">Sua senha segura:</label>
+                                    <input type="text" id="pass-result" readonly placeholder="Clique em 'Gerar' para começar...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pass-length">Tamanho da Senha: <span id="pass-length-value">16</span></label>
+                                    <input type="range" id="pass-length" min="8" max="32" value="16">
+                                </div>
+                                <div class="form-group checkbox-group">
+                                    <label><input type="checkbox" id="pass-upper" checked> Incluir Maiúsculas (A-Z)</label>
+                                    <label><input type="checkbox" id="pass-lower" checked> Incluir Minúsculas (a-z)</label>
+                                    <label><input type="checkbox" id="pass-numbers" checked> Incluir Números (0-9)</label>
+                                    <label><input type="checkbox" id="pass-symbols"> Incluir Símbolos (!@#$...)</label>
+                                </div>
+                                <p id="pass-feedback" class="feedback-text"></p>
+                                <div class="button-group">
+                                    <button id="btn-generate-pass">Gerar Senha</button>
+                                    <button id="btn-copy-pass" class="secondary-btn">Copiar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="gorjeta">
+                    <h2>Calculadora de Gorjeta e Divisão de Conta</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Cálculo da Conta</h3>
+                                <div class="form-group">
+                                    <label for="conta-valor">Valor Total da Conta (R$):</label>
+                                    <input type="number" id="conta-valor" placeholder="100.00" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="gorjeta-perc">Percentual de Gorjeta: <span id="gorjeta-perc-value">10%</span></label>
+                                    <input type="range" id="gorjeta-perc" min="0" max="30" value="10">
+                                </div>
+                                <div class="form-group">
+                                    <label for="num-pessoas">Dividir por (Pessoas):</label>
+                                    <input type="number" id="num-pessoas" placeholder="1" min="1" required value="1">
+                                </div>
+                                <button id="btn-calc-gorjeta">Calcular</button>
+                            </div>
+                            <div class="tool-card result-card">
+                                <h3>Resultados</h3>
+                                <p class="result-label">Gorjeta Total:</p>
+                                <p class="result-value" id="gorjeta-total">R$ 0,00</p>
+                                
+                                <p class="result-label">Total a Pagar (Conta + Gorjeta):</p>
+                                <p class="result-value" id="total-pagar">R$ 0,00</p>
+
+                                <p class="result-label">Valor por Pessoa:</p>
+                                <p class="result-value primary large" id="valor-pessoa">R$ 0,00</p>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de Contas</h3>
+                            <div id="history-gorjeta" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-gorjeta">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="juros">
+                    <h2>Calculadora de Juros Compostos</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Simulação de Investimento</h3>
+                                <div class="form-group">
+                                    <label for="juros-capital">Capital Inicial (R$):</label>
+                                    <input type="number" id="juros-capital" placeholder="1000.00" step="0.01" required value="1000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="juros-aporte">Aporte Mensal (R$):</label>
+                                    <input type="number" id="juros-aporte" placeholder="200.00" step="0.01" required value="200">
+                                </div>
+                                <div class="form-group">
+                                    <label for="juros-taxa">Taxa de Juros Anual (%):</label>
+                                    <input type="number" id="juros-taxa" placeholder="8.0" step="0.1" required value="8.0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="juros-tempo">Período (Anos):</label>
+                                    <input type="number" id="juros-tempo" placeholder="10" min="1" required value="10">
+                                </div>
+                                <button id="btn-calc-juros">Simular</button>
+                            </div>
+                            <div class="tool-card result-card">
+                                <h3>Resultados da Simulação</h3>
+                                <p class="result-label">Total Investido (Capital + Aportes):</p>
+                                <p class="result-value" id="juros-investido">R$ 0,00</p>
+                                
+                                <p class="result-label">Lucro (Juros Acumulados):</p>
+                                <p class="result-value large" id="juros-lucro">R$ 0,00</p>
+
+                                <p class="result-label">Valor Final (Montante):</p>
+                                <p class="result-value primary large" id="juros-final">R$ 0,00</p>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de Juros</h3>
+                            <div id="history-juros" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-juros">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="combustivel">
+                    <h2>Calculadora de Consumo de Combustível</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Calcular Viagem</h3>
+                                <div class="form-group">
+                                    <label for="comb-distancia">Distância Total (Km):</label>
+                                    <input type="number" id="comb-distancia" placeholder="200" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="comb-rendimento">Rendimento do Veículo (Km/L):</label>
+                                    <input type="number" id="comb-rendimento" placeholder="10.5" step="0.1" min="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="comb-preco-litro">Preço Médio do Litro (R$):</label>
+                                    <input type="number" id="comb-preco-litro" placeholder="5.50" step="0.01" min="0.1" required>
+                                </div>
+                                <button id="btn-calc-combustivel">Calcular Custo</button>
+                            </div>
+                            <div class="tool-card result-card">
+                                <h3>Resultados</h3>
+                                <p class="result-label">Litros Necessários:</p>
+                                <p class="result-value" id="comb-litros">0.00 Litros</p>
+                                
+                                <p class="result-label">Custo Total da Viagem:</p>
+                                <p class="result-value primary large" id="comb-custo">R$ 0,00</p>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de Viagens</h3>
+                            <div id="history-combustivel" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-combustivel">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="data">
+                    <h2>Calculadora de Diferença de Datas e Idade</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Intervalo de Datas</h3>
+                                <div class="form-group">
+                                    <label for="data-inicio">Data de Início:</label>
+                                    <input type="date" id="data-inicio" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="data-fim">Data Final:</label>
+                                    <input type="date" id="data-fim" required>
+                                </div>
+                                <button id="btn-calc-data">Calcular Diferença</button>
+                            </div>
+                            <div class="tool-card result-card">
+                                <h3>Resultados</h3>
+                                <p class="result-label">Diferença Completa:</p>
+                                <p class="result-value" id="data-result-full">0 Anos, 0 Meses, 0 Dias</p>
+                                
+                                <p class="result-label">Total em Dias:</p>
+                                <p class="result-value large" id="data-result-dias">0 Dias</p>
+
+                                <p class="result-label">Total em Meses (Aprox.):</p>
+                                <p class="result-value" id="data-result-meses">0.00 Meses</p>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de Datas</h3>
+                            <div id="history-data" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-data">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="moedas">
+                    <h2>Conversor de Moedas 💰 (Taxas Fixas)</h2>
+                    <div class="tool-container">
+                        <div class="tool-hub main-tool-area">
+                            <div class="tool-card">
+                                <h3>Converter para Real (BRL)</h3>
+                                <div class="form-group">
+                                    <label for="moeda-origem">Moeda de Origem:</label>
+                                    <select id="moeda-origem">
+                                        <option value="USD">Dólar Americano (USD)</option>
+                                        <option value="EUR">Euro (EUR)</option>
+                                        <option value="GBP">Libra Esterlina (GBP)</option>
+                                        <option name="ARS">Peso Argentino (ARS)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="moeda-valor">Valor a Converter:</label>
+                                    <input type="number" id="moeda-valor" placeholder="100.00" step="0.01" required>
+                                </div>
+                                <button id="btn-calc-moedas">Converter para R$</button>
+                                <p class="info-text">
+                                    *As taxas são fixas para uso offline e podem não refletir o câmbio atual.
+                                </p>
+                            </div>
+
+                            <div class="tool-card result-card">
+                                <h3>Resultado da Conversão</h3>
+                                <p class="result-label">Moeda de Origem:</p>
+                                <p class="result-value" id="moeda-valor-origem">0.00 USD</p>
+                                
+                                <p class="result-label">Valor Convertido (BRL):</p>
+                                <p class="result-value primary large" id="moeda-resultado">R$ 0,00</p>
+                            </div>
+                        </div>
+                        <div class="history-panel tool-card">
+                            <h3>Histórico de Câmbio</h3>
+                            <div id="history-moedas" class="history-list">
+                                <p class="history-empty">Nenhum cálculo registrado.</p>
+                            </div>
+                            <button class="clear-history-btn" data-history-id="history-moedas">Limpar Histórico</button>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
