@@ -126,7 +126,7 @@ body {
 
 .nav-link:hover {
     background-color: var(--nav-link-hover);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
     transform: translateY(-2px);
 }
 
@@ -313,7 +313,7 @@ button {
     cursor: pointer;
     font-size: 1.1em;
     font-weight: 600;
-    transition: background-color 0.3s, box-shadow 0.3s;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
     width: 100%;
     box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
 }
@@ -321,6 +321,16 @@ button {
 button:hover {
     background-color: var(--primary-color);
     box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Classe especial para estado de carregamento (API) */
+button.loading {
+    background-color: #7f8c8d;
+    cursor: wait;
+    opacity: 0.8;
+    transform: none;
+    box-shadow: none;
 }
 
 .secondary-btn {
@@ -408,7 +418,6 @@ button:hover {
 #display.pulsate {
     animation: pulsate 0.5s ease-out;
 }
-/* ... [Mantenha o restante dos estilos da calculadora, histórico e responsividade] ... */
 
 .keys {
     display: grid;
@@ -425,10 +434,12 @@ button:hover {
     color: var(--text-primary);
     box-shadow: var(--shadow-subtle);
     transition: all 0.1s ease;
+    margin-top: 0;
 }
 
 .keys button:hover {
     background-color: #d8e0e5;
+    transform: none;
 }
 
 .dark-mode .keys button {
@@ -521,6 +532,15 @@ button:hover {
     box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
 }
 
+/* Outros (Informação do Câmbio) */
+.info-text {
+    margin-top: 15px;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+}
+
 /* IMC e Tabelas */
 .imc-table-card table {
     width: 100%;
@@ -536,66 +556,141 @@ button:hover {
     border-bottom: 1px solid #3c4554;
 }
 
-/* --- 9. RESPONSIVIDADE --- */
+/* --- 9. RESPONSIVIDADE (LAYOUT MOBILE ESPECÍFICO) --- */
 
-/* Tablet e Mobile (Sidebar Off-Canvas) */
 @media (max-width: 1024px) {
     .sidebar {
         width: 220px;
         min-width: 220px;
     }
-    .main-content-area {
-        padding: 20px;
-    }
-    .tool-container {
-        flex-direction: column;
-        gap: 20px;
-    }
-    .history-panel {
-        max-height: 400px;
-    }
 }
 
+/* LAYOUT MOBILE: BARRA HORIZONTAL DESLIZANTE */
 @media (max-width: 768px) {
-    .sidebar {
-        position: fixed;
-        left: -250px; /* Esconde a sidebar */
-        transition: left 0.3s ease-in-out;
-        box-shadow: none; /* Remove a sombra quando escondida */
+    
+    /* Ajusta o container principal para empilhar */
+    .dashboard-layout {
+        flex-direction: column;
     }
 
-    /* Quando a classe 'sidebar-open' é adicionada ao body, mostra a sidebar */
-    body.sidebar-open .sidebar {
-        left: 0;
-        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
-    }
-    
-    .menu-toggle {
-        display: block; /* Mostra o botão hamburger */
-    }
-    
-    .main-header {
-        position: sticky;
+    /* Transforma a Sidebar Vertical em Barra Horizontal no Topo */
+    .sidebar {
+        position: sticky; /* Gruda no topo da tela */
         top: 0;
-        background-color: var(--bg-page);
-        z-index: 500;
-        padding: 15px 0;
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        flex-direction: row; /* Itens lado a lado */
+        overflow-x: auto; /* Permite rolar para o lado */
+        overflow-y: hidden;
+        padding: 10px 15px;
+        z-index: 1000; /* Fica acima de tudo */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        
+        /* Scroll suave e esconde a barra de rolagem */
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+    }
+    
+    /* Esconde a barra de rolagem no Chrome/Safari */
+    .sidebar::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Esconde o título da sidebar para economizar espaço */
+    .sidebar-header {
+        display: none;
+    }
+
+    /* Ajusta o container dos links */
+    .tabs-container {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        padding: 0;
+        width: max-content; /* Garante que os itens fiquem na linha */
+    }
+
+    /* Estilo de "Cápsula" (Chip) para os botões no mobile */
+    .nav-link {
+        flex: 0 0 auto; /* Não estica */
+        width: auto;
+        padding: 8px 16px;
+        border-radius: 50px; /* Borda redonda estilo App */
+        font-size: 0.9em;
+        background-color: rgba(255, 255, 255, 0.1); /* Fundo sutil */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-on-sidebar);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Adiciona a transição no hover para manter a sensação de toque suave */
+        transition: background-color 0.2s, box-shadow 0.2s, color 0.2s, transform 0.2s;
+    }
+
+    /* Estado Ativo no Mobile */
+    .nav-link.active {
+        background-color: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+        box-shadow: 0 2px 10px rgba(0, 188, 212, 0.3);
+        transform: translateY(-1px);
+    }
+    /* Remove o hover de transformar no mobile para evitar conflito com o scroll */
+    .nav-link:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+
+    /* Ajuste do cabeçalho principal */
+    .main-header {
+        padding: 15px 20px;
+        justify-content: space-between; /* Separa Titulo e Botão Tema */
+        display: flex; /* Garante que os itens fiquem na linha */
+        align-items: center;
+        border-bottom: 1px solid var(--text-secondary); /* Adiciona uma linha sutil */
     }
 
     .main-header h1 {
-        font-size: 1.5em;
-        margin-left: 0;
+        font-size: 1.4em; /* Fonte menor no mobile */
+        margin: 0;
+    }
+    
+    .menu-toggle {
+        display: none; /* Removemos o botão hamburger */
+    }
+    
+    .theme-toggle {
+        font-size: 1.2em; /* Deixa o botão de tema um pouco maior */
     }
 
+    /* Ajuste do conteúdo */
+    .main-content-area {
+        padding: 15px;
+    }
+
+    /* Ajuste das ferramentas para 1 coluna */
     .tool-hub {
         grid-template-columns: 1fr;
     }
     
-    .history-panel {
-        order: 2; /* Coloca o histórico abaixo da ferramenta principal */
+    .calculator {
+        padding: 15px;
     }
-    
-    .dashboard-layout {
-        overflow-x: hidden; /* Evita scroll horizontal ao abrir a sidebar */
+
+    .history-panel {
+        margin-top: 30px;
+        max-height: 300px;
     }
 }
