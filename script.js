@@ -58,14 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (historyId === 'history-moedas') { 
              resultText = `Convertido: ${result}`;
         } else if (historyId === 'history-senha') {
-             resultText = ` (Gerada)`;
+             // NOVO: Formatação específica para a senha
+             resultText = `: ${result}`;
         }
         return resultText;
     }
 
     function addToHistory(historyId, equation, result, clickAction = null) {
         const historyList = document.getElementById(historyId);
-        if (!historyList) return; // Segurança caso o ID não exista
+        if (!historyList) return;
 
         const emptyMessage = historyList.querySelector('.history-empty');
         if (emptyMessage) {
@@ -266,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // MANIPULADOR DE TECLADO (Unificado)
+    // MANIPULADOR DE TECLADO
     document.addEventListener('keydown', (event) => {
         const key = event.key;
         const activeTab = document.querySelector('.tab-content.active');
@@ -275,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!activeTab || activeElement.tagName === 'BUTTON') return;
         const activeTabId = activeTab.id;
 
-        // 1. Tratamento da tecla Enter
         if (key === 'Enter' || key === '=') {
             event.preventDefault();
             if (activeTabId === 'padrao') {
@@ -307,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 2. Digitação na Calculadora Padrão
         const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'SELECT';
         if (activeTabId === 'padrao') {
             if (isInputFocused && activeElement !== display) return;
@@ -441,16 +440,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA DO GERADOR DE SENHA ---
+    // --- LÓGICA DO GERADOR DE SENHA (CORRIGIDO) ---
     const passResultInput = document.getElementById('pass-result');
     const passLengthSlider = document.getElementById('pass-length');
     const passLengthValue = document.getElementById('pass-length-value');
+    
     const passUpperCheck = document.getElementById('pass-upper');
     const passLowerCheck = document.getElementById('pass-lower');
     const passNumbersCheck = document.getElementById('pass-numbers');
     const passSymbolsCheck = document.getElementById('pass-symbols');
+    
     const generateBtn = document.getElementById('btn-generate-pass');
-    const copyBtn = document.getElementById('btn-copy-pass'); // ID corrigido para corresponder ao HTML
+    const copyBtn = document.getElementById('btn-copy-pass');
     const passFeedback = document.getElementById('pass-feedback');
 
     const charsets = { 
@@ -471,25 +472,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const length = parseInt(passLengthSlider.value);
             let charset = '';
             let password = '';
-            passFeedback.textContent = '';
+            if(passFeedback) passFeedback.textContent = '';
             passResultInput.style.borderColor = 'var(--text-secondary)'; 
 
-            if (passUpperCheck.checked) charset += charsets.upper;
-            if (passLowerCheck.checked) charset += charsets.lower;
-            if (passNumbersCheck.checked) charset += charsets.numbers;
-            if (passSymbolsCheck.checked) charset += charsets.symbols;
+            // Verifica quais checkboxes estão marcados
+            if (passUpperCheck && passUpperCheck.checked) charset += charsets.upper;
+            if (passLowerCheck && passLowerCheck.checked) charset += charsets.lower;
+            if (passNumbersCheck && passNumbersCheck.checked) charset += charsets.numbers;
+            if (passSymbolsCheck && passSymbolsCheck.checked) charset += charsets.symbols;
 
             if (charset === '') {
-                passFeedback.textContent = 'Erro: Selecione ao menos um tipo de caractere.';
-                passFeedback.style.color = 'var(--error-color)';
+                if(passFeedback) {
+                    passFeedback.textContent = 'Erro: Selecione ao menos um tipo de caractere.';
+                    passFeedback.style.color = 'var(--error-color)';
+                }
                 passResultInput.value = '';
                 return;
             }
 
-            if (passUpperCheck.checked) password += charsets.upper[Math.floor(Math.random() * charsets.upper.length)];
-            if (passLowerCheck.checked) password += charsets.lower[Math.floor(Math.random() * charsets.lower.length)];
-            if (passNumbersCheck.checked) password += charsets.numbers[Math.floor(Math.random() * charsets.numbers.length)];
-            if (passSymbolsCheck.checked) password += charsets.symbols[Math.floor(Math.random() * charsets.symbols.length)];
+            // Garante pelo menos um de cada
+            if (passUpperCheck && passUpperCheck.checked) password += charsets.upper[Math.floor(Math.random() * charsets.upper.length)];
+            if (passLowerCheck && passLowerCheck.checked) password += charsets.lower[Math.floor(Math.random() * charsets.lower.length)];
+            if (passNumbersCheck && passNumbersCheck.checked) password += charsets.numbers[Math.floor(Math.random() * charsets.numbers.length)];
+            if (passSymbolsCheck && passSymbolsCheck.checked) password += charsets.symbols[Math.floor(Math.random() * charsets.symbols.length)];
 
             for (let i = password.length; i < length; i++) {
                 const randomIndex = Math.floor(Math.random() * charset.length);
@@ -499,8 +504,8 @@ document.addEventListener('DOMContentLoaded', () => {
             password = password.split('').sort(() => 0.5 - Math.random()).join('');
             passResultInput.value = password;
             
-            // Adiciona ao histórico
-            addToHistory('history-senha', `Tam: ${length}`, password);
+            // NOVO: Adiciona mensagem ao histórico (Senha Gerada + Senha)
+            addToHistory('history-senha', `Senha Gerada (${length} chars)`, password);
         });
     }
 
@@ -508,24 +513,24 @@ document.addEventListener('DOMContentLoaded', () => {
         copyBtn.addEventListener('click', () => {
             const passwordToCopy = passResultInput.value;
             if (!passwordToCopy) {
-                passFeedback.textContent = 'Nada para copiar. Gere uma senha primeiro.';
-                passFeedback.style.color = 'var(--text-secondary)';
+                if(passFeedback) {
+                    passFeedback.textContent = 'Nada para copiar. Gere uma senha primeiro.';
+                    passFeedback.style.color = 'var(--text-secondary)';
+                }
                 return;
             }
             navigator.clipboard.writeText(passwordToCopy).then(() => {
-                passFeedback.textContent = 'Senha copiada!';
-                passFeedback.style.color = 'var(--primary-color)';
+                if(passFeedback) {
+                    passFeedback.textContent = 'Senha copiada!';
+                    passFeedback.style.color = 'var(--primary-color)';
+                }
             }).catch(err => {
                 console.error('Erro ao copiar: ', err);
-                passFeedback.textContent = 'Erro ao copiar.';
-                passFeedback.style.color = 'var(--error-color)';
             });
         });
     }
 
     // --- LÓGICA DO GERADOR DE GORJETA E DIVISÃO ---
-    const contaValorInput = document.getElementById('conta-valor');
-    const numPessoasInput = document.getElementById('num-pessoas');
     const gorjetaPercSlider = document.getElementById('gorjeta-perc');
     const gorjetaPercValue = document.getElementById('gorjeta-perc-value');
     const btnCalcGorjeta = document.getElementById('btn-calc-gorjeta');
@@ -605,7 +610,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const lucro = montante - totalInvestido;
 
-            // Corrigido: Agora usamos os IDs corretos (juros-lucro e juros-final são os mesmos no HTML e JS agora)
             if (jurosInvestidoEl) jurosInvestidoEl.textContent = formatCurrency(totalInvestido);
             if (jurosLucroEl) jurosLucroEl.textContent = formatCurrency(lucro);
             if (jurosFinalEl) jurosFinalEl.textContent = formatCurrency(montante);
@@ -656,7 +660,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataFimInput = document.getElementById('data-fim');
     const btnCalcData = document.getElementById('btn-calc-data');
     
-    // CORREÇÃO DE IDs AQUI: O HTML usa 'data-result-full', não 'data-result-text'
     const dataResultFullEl = document.getElementById('data-result-full');
     const dataResultDiasEl = document.getElementById('data-result-dias');
     const dataResultMesesEl = document.getElementById('data-result-meses');
@@ -725,7 +728,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const diasResultText = `${diff.totalDays.toLocaleString('pt-BR')} Dias`;
             const mesesResultText = `${diff.totalMonths.toFixed(2).toLocaleString('pt-BR')} Meses`;
 
-            // Correção aplicada: Usando a variável correta ligada ao ID correto
             if (dataResultFullEl) dataResultFullEl.textContent = fullResultText;
             if (dataResultDiasEl) dataResultDiasEl.textContent = diasResultText;
             if (dataResultMesesEl) dataResultMesesEl.textContent = mesesResultText;
