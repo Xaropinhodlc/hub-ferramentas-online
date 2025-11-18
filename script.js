@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const newTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
         applyTheme(newTheme);
     });
-    // --- FIM LÓGICA DARK MODE ---
     
     // --- FUNÇÃO DE ANIMAÇÃO DE RESULTADO (PULSE) ---
     function animateResult(resultElement) {
@@ -40,11 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
             resultElement.classList.add('pulsate');
             setTimeout(() => {
                 resultElement.classList.remove('pulsate');
-            }, 500); 
+            }, 500);
         }
     }
-    // --- FIM FUNÇÃO DE ANIMAÇÃO DE RESULTADO ---
-
 
     // --- FUNÇÕES GENÉRICAS DE HISTÓRICO (COM PERSISTÊNCIA) ---
 
@@ -60,12 +57,16 @@ document.addEventListener('DOMContentLoaded', () => {
              resultText = `Diferença: ${result}`;
         } else if (historyId === 'history-moedas') { 
              resultText = `Convertido: ${result}`;
+        } else if (historyId === 'history-senha') {
+             resultText = ` (Gerada)`;
         }
         return resultText;
     }
 
     function addToHistory(historyId, equation, result, clickAction = null) {
         const historyList = document.getElementById(historyId);
+        if (!historyList) return; // Segurança caso o ID não exista
+
         const emptyMessage = historyList.querySelector('.history-empty');
         if (emptyMessage) {
             historyList.removeChild(emptyMessage);
@@ -111,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const historyItems = JSON.parse(savedHistory);
             for (let i = historyItems.length - 1; i >= 0; i--) {
                 const item = historyItems[i];
-                
                 let clickAction = null;
 
                 if (historyId === 'history-padrao') {
@@ -131,9 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Função auxiliar interna para carregar sem salvar de novo
     function _addHistoryItemToDOM(historyId, equation, result, clickAction = null) {
         const historyList = document.getElementById(historyId);
+        if (!historyList) return;
+
         const emptyMessage = historyList.querySelector('.history-empty');
         if (emptyMessage) {
             historyList.removeChild(emptyMessage);
@@ -154,38 +155,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- LÓGICA DA NAVEGAÇÃO LATERAL (SUBSTITUI A LÓGICA DE ABAS) ---
+    // --- LÓGICA DA NAVEGAÇÃO LATERAL ---
     const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
     const contents = document.querySelectorAll('.tab-content');
 
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
-            // 1. Desativa todos os links
-            navLinks.forEach(t => t.classList.remove('active'));
-            // 2. Esconde todos os conteúdos
+            navLinks.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
             contents.forEach(c => c.classList.remove('active'));
 
-            // 3. Ativa o link clicado
             link.classList.add('active');
-            // 4. Mostra o conteúdo correspondente
-            const contentId = link.getAttribute('data-tab'); 
-            document.getElementById(contentId).classList.add('active');
+            link.setAttribute('aria-selected', 'true');
             
-            // 5. Fecha a sidebar em mobile para melhor UX
-            if (window.innerWidth <= 768) {
-                document.body.classList.remove('sidebar-open');
-            }
+            const contentId = link.getAttribute('data-tab'); 
+            const contentEl = document.getElementById(contentId);
+            if (contentEl) contentEl.classList.add('active');
         });
     });
-    
-    // Lógica do Menu Hamburger (Mobile)
-    const menuToggle = document.getElementById('menu-toggle');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            document.body.classList.toggle('sidebar-open');
-        });
-    }
-    // --- FIM LÓGICA DA NAVEGAÇÃO LATERAL ---
 
     // --- LÓGICA DE LIMPAR HISTÓRICO ---
     document.querySelectorAll('.clear-history-btn').forEach(button => {
@@ -197,8 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- LÓGICA DA CALCULADORA PADRÃO (Refatorada e Centralizada) ---
-    
+    // --- LÓGICA DA CALCULADORA PADRÃO ---
     const display = document.getElementById('display');
     const keysContainer = document.getElementById('calculator-keys');
     let currentExpression = ''; 
@@ -237,16 +225,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (currentExpression === '') return;
             let finalExpression = currentExpression;
-
-            // Remove operador final se houver
             if (['*', '/', '+', '-', '.'].includes(finalExpression.slice(-1))) {
                 finalExpression = finalExpression.slice(0, -1);
             }
-
-            // A forma mais segura de calcular (evitando eval)
             const result = new Function('return ' + finalExpression)(); 
             
-            // Formatação do resultado (mantendo precisão alta)
             let formattedResult = result.toString();
             if (Number.isFinite(result)) {
                 formattedResult = parseFloat(result.toFixed(10)).toLocaleString('pt-BR');
@@ -255,9 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
             display.value = formattedResult;
             addToHistory('history-padrao', currentExpression.replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−'), formattedResult);
             setCurrentExpression(result.toString());
-            
-            animateResult(display); // <--- APLICA ANIMAÇÃO
-
+            animateResult(display);
         } catch (e) {
             display.value = 'Erro';
             setCurrentExpression('');
@@ -285,33 +266,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // NOVO MANIPULADOR DE TECLADO PARA TODAS AS FERRAMENTAS
+    // MANIPULADOR DE TECLADO (Unificado)
     document.addEventListener('keydown', (event) => {
         const key = event.key;
         const activeTab = document.querySelector('.tab-content.active');
         const activeElement = document.activeElement;
 
-        // Verifica se há uma aba ativa e se o elemento focado não é um botão (para evitar cliques duplicados)
         if (!activeTab || activeElement.tagName === 'BUTTON') return;
-
         const activeTabId = activeTab.id;
 
-        // --- 1. TRATAMENTO DA TECLA ENTER (PARA TODAS AS FERRAMENTAS) ---
+        // 1. Tratamento da tecla Enter
         if (key === 'Enter' || key === '=') {
-            event.preventDefault(); // Previne a submissão padrão de formulários
-            
+            event.preventDefault();
             if (activeTabId === 'padrao') {
-                calculateResult(); // Calcula a expressão na Calculadora Padrão
+                calculateResult();
             } else {
-                // Mapeia a aba ativa para o botão de cálculo correspondente
                 let targetButtonId = null;
                 switch (activeTabId) {
                     case 'porcentagem':
-                        // Tenta identificar o botão de "Valor é qual %" se o foco estiver em um de seus inputs
                         if (activeElement.id === 'is-val' || activeElement.id === 'is-total') {
                             targetButtonId = 'btn-calc-is-perc';
                         } else {
-                            // Padrão: cálculo de "Porcentagem de um valor"
                             targetButtonId = 'btn-calc-perc'; 
                         }
                         break;
@@ -322,56 +297,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 'combustivel': targetButtonId = 'btn-calc-combustivel'; break; 
                     case 'data': targetButtonId = 'btn-calc-data'; break; 
                     case 'moedas': targetButtonId = 'btn-calc-moedas'; break; 
+                    case 'senha': targetButtonId = 'btn-generate-pass'; break;
                 }
-
                 if (targetButtonId) {
                     const targetButton = document.getElementById(targetButtonId);
-                    if (targetButton) {
-                        targetButton.click(); // Simula o clique
-                    }
+                    if (targetButton) targetButton.click();
                 }
             }
             return;
         }
 
-        // --- 2. TRATAMENTO DE TECLAS ESPECÍFICAS DA CALCULADORA PADRÃO ---
-        // Implementação do bug fix: Só permite digitação de calculadora se não for um input de outra ferramenta.
+        // 2. Digitação na Calculadora Padrão
         const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'SELECT';
-
         if (activeTabId === 'padrao') {
-            // Se o foco estiver em outro input da aba 'padrao', ignora a digitação de números/operadores
             if (isInputFocused && activeElement !== display) return;
-            
-            // Números e operadores
             if ((key >= '0' && key <= '9') || key === '.' || key === '(' || key === ')') {
                 appendToDisplay(key); event.preventDefault(); 
-            } 
-            else if (key === '+' || key === '-' || key === '*' || key === '/') {
+            } else if (key === '+' || key === '-' || key === '*' || key === '/') {
                 appendToDisplay(key); event.preventDefault();
-            } 
-            // Teclas de controle (Backspace/Delete/c)
-            else if (key === 'Backspace') {
+            } else if (key === 'Backspace') {
                 deleteLast(); event.preventDefault();
-            } 
-            else if (key === 'Delete' || key === 'c' || key === 'C') {
+            } else if (key === 'Delete' || key === 'c' || key === 'C') {
                 clearDisplay(); event.preventDefault();
             }
         }
     });
 
-    // --- Carregar Histórico Salvo ao Iniciar ---
-    loadHistory('history-padrao');
-    loadHistory('history-porcentagem');
-    loadHistory('history-conversor');
-    loadHistory('history-imc'); 
-    loadHistory('history-gorjeta');
-    loadHistory('history-juros'); 
-    loadHistory('history-combustivel');
-    loadHistory('history-data');
-    loadHistory('history-moedas'); 
+    // --- CARREGAR HISTÓRICOS ---
+    const historyIds = ['history-padrao', 'history-porcentagem', 'history-conversor', 'history-imc', 'history-gorjeta', 'history-juros', 'history-combustivel', 'history-data', 'history-moedas', 'history-senha'];
+    historyIds.forEach(id => loadHistory(id));
     
     // --- LÓGICA DA CALCULADORA DE PORCENTAGEM ---
-    
     const btnCalcPerc = document.getElementById('btn-calc-perc');
     const percValInput = document.getElementById('perc-val');
     const percTotalInput = document.getElementById('perc-total');
@@ -385,12 +341,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultEl.textContent = 'Por favor, insira valores válidos.'; return;
             }
             const result = (perc / 100) * total;
-      
             const formattedResult = result.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             resultEl.textContent = `Resultado: ${formattedResult}`;
             addToHistory('history-porcentagem', `${perc}% de ${total}`, formattedResult);
-            
-            animateResult(resultEl); // <--- APLICA ANIMAÇÃO
+            animateResult(resultEl);
         });
     }
 
@@ -413,8 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formattedResult = result.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
             resultEl.textContent = `Resultado: ${formattedResult}`;
             addToHistory('history-porcentagem', `${val} é qual % de ${total}?`, formattedResult);
-            
-            animateResult(resultEl); // <--- APLICA ANIMAÇÃO
+            animateResult(resultEl);
         });
     }
 
@@ -443,8 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formattedResult = `${result.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} ${unit}`;
             resultEl.textContent = `Resultado: ${formattedResult}`;
             addToHistory('history-conversor', `${input} (${typeText})`, formattedResult);
-            
-            animateResult(resultEl); // <--- APLICA ANIMAÇÃO
+            animateResult(resultEl);
         });
     }
 
@@ -461,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pesoInput.closest('.form-group').classList.remove('error');
             alturaInput.closest('.form-group').classList.remove('error');
             resultEl.style.color = 'var(--text-primary)'; 
+            
             let isValid = true;
             if (isNaN(peso) || peso <= 0) {
                 pesoInput.closest('.form-group').classList.add('error');
@@ -471,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultEl.textContent = 'Insira uma Altura válida.'; isValid = false;
             }
             if (!isValid) return;
-            
+
             const imc = peso / (altura * altura);
             let classificacao = ''; let resultColor = 'var(--primary-color)';
             if (imc < 18.5) { classificacao = 'Abaixo do Peso'; resultColor = '#ffc107'; }
@@ -483,9 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formattedResult = imc.toFixed(2);
             resultEl.textContent = `Seu IMC é ${formattedResult}. Classificação: ${classificacao}`;
             resultEl.style.color = resultColor;
-            
-            animateResult(resultEl); // <--- APLICA ANIMAÇÃO
-            
+            animateResult(resultEl);
             addToHistory('history-imc', `Peso: ${peso}kg / Altura: ${altura}m`, `${formattedResult} (${classificacao})`);
         });
     }
@@ -499,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const passNumbersCheck = document.getElementById('pass-numbers');
     const passSymbolsCheck = document.getElementById('pass-symbols');
     const generateBtn = document.getElementById('btn-generate-pass');
-    const copyBtn = document.getElementById('btn-copy-pass');
+    const copyBtn = document.getElementById('btn-copy-pass'); // ID corrigido para corresponder ao HTML
     const passFeedback = document.getElementById('pass-feedback');
 
     const charsets = { 
@@ -535,22 +486,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Garante que pelo menos um caractere de cada tipo selecionado esteja na senha
             if (passUpperCheck.checked) password += charsets.upper[Math.floor(Math.random() * charsets.upper.length)];
             if (passLowerCheck.checked) password += charsets.lower[Math.floor(Math.random() * charsets.lower.length)];
             if (passNumbersCheck.checked) password += charsets.numbers[Math.floor(Math.random() * charsets.numbers.length)];
             if (passSymbolsCheck.checked) password += charsets.symbols[Math.floor(Math.random() * charsets.symbols.length)];
 
-            // Preenche o restante da senha
             for (let i = password.length; i < length; i++) {
                 const randomIndex = Math.floor(Math.random() * charset.length);
                 password += charset[randomIndex];
             }
 
-            // Mistura a senha para garantir a aleatoriedade
             password = password.split('').sort(() => 0.5 - Math.random()).join('');
-
             passResultInput.value = password;
+            
+            // Adiciona ao histórico
+            addToHistory('history-senha', `Tam: ${length}`, password);
         });
     }
 
@@ -563,16 +513,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             navigator.clipboard.writeText(passwordToCopy).then(() => {
-                passFeedback.textContent = 'Senha copiada para a área de transferência!';
+                passFeedback.textContent = 'Senha copiada!';
                 passFeedback.style.color = 'var(--primary-color)';
             }).catch(err => {
                 console.error('Erro ao copiar: ', err);
-                passFeedback.textContent = 'Erro ao copiar. Tente selecionar o texto manualmente.';
+                passFeedback.textContent = 'Erro ao copiar.';
                 passFeedback.style.color = 'var(--error-color)';
             });
         });
     }
-    // --- FIM DA LÓGICA DO GERADOR DE SENHA ---
 
     // --- LÓGICA DO GERADOR DE GORJETA E DIVISÃO ---
     const contaValorInput = document.getElementById('conta-valor');
@@ -613,11 +562,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const resultHistory = formatCurrency(valorPorPessoa);
             addToHistory('history-gorjeta', equation, resultHistory);
             
-            animateResult(valorPessoaEl); // <--- APLICA ANIMAÇÃO
+            animateResult(valorPessoaEl);
         });
     }
-
-    // --- FIM DA LÓGICA DO GERADOR DE GORJETA E DIVISÃO ---
 
     // --- LÓGICA DO CALCULADOR DE JUROS COMPOSTOS ---
     const jurosCapitalInput = document.getElementById('juros-capital');
@@ -625,6 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const jurosTaxaInput = document.getElementById('juros-taxa');
     const jurosTempoInput = document.getElementById('juros-tempo');
     const btnCalcJuros = document.getElementById('btn-calc-juros');
+    
     const jurosInvestidoEl = document.getElementById('juros-investido');
     const jurosLucroEl = document.getElementById('juros-lucro');
     const jurosFinalEl = document.getElementById('juros-final');
@@ -657,18 +605,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const lucro = montante - totalInvestido;
 
-            jurosInvestidoEl.textContent = formatCurrency(totalInvestido);
-            jurosLucroEl.textContent = formatCurrency(lucro);
-            jurosFinalEl.textContent = formatCurrency(montante);
+            // Corrigido: Agora usamos os IDs corretos (juros-lucro e juros-final são os mesmos no HTML e JS agora)
+            if (jurosInvestidoEl) jurosInvestidoEl.textContent = formatCurrency(totalInvestido);
+            if (jurosLucroEl) jurosLucroEl.textContent = formatCurrency(lucro);
+            if (jurosFinalEl) jurosFinalEl.textContent = formatCurrency(montante);
 
             const equation = `C: ${capital} | A: ${aporteMensal} | T: ${(taxaAnual*100).toFixed(1)}% | P: ${anos}a`;
             const resultHistory = formatCurrency(montante);
             addToHistory('history-juros', equation, resultHistory);
             
-            animateResult(jurosFinalEl); // <--- APLICA ANIMAÇÃO
+            animateResult(jurosFinalEl);
         });
     }
-    // --- FIM DA LÓGICA DO CALCULADOR DE JUROS COMPOSTOS ---
 
     // --- LÓGICA DO CALCULADOR DE CONSUMO DE COMBUSTÍVEL ---
     const combDistanciaInput = document.getElementById('comb-distancia');
@@ -692,41 +640,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const litrosNecessarios = distancia / rendimento;
             const custoTotal = litrosNecessarios * precoLitro;
 
-            // EXIBIÇÃO
-            combLitrosEl.textContent = `${litrosNecessarios.toFixed(2)} Litros`;
+            combLitrosEl.textContent = `${litrosNecessarios.toFixed(2).replace('.', ',')} L`;
             combCustoEl.textContent = formatCurrency(custoTotal);
 
-            // HISTÓRICO
-            const equation = `${distancia}Km @ ${rendimento}Km/L (R$ ${precoLitro.toFixed(2)}/L)`;
+            const equation = `D: ${distancia}km | R: ${rendimento}km/L | P: ${formatCurrency(precoLitro)}`;
             const resultHistory = formatCurrency(custoTotal);
             addToHistory('history-combustivel', equation, resultHistory);
             
-            animateResult(combCustoEl); // <--- APLICA ANIMAÇÃO
+            animateResult(combCustoEl);
         });
     }
-    // --- FIM DA LÓGICA DO CALCULADOR DE CONSUMO DE COMBUSTÍVEL ---
 
     // --- LÓGICA DO CALCULADOR DE DATA/IDADE ---
     const dataInicioInput = document.getElementById('data-inicio');
     const dataFimInput = document.getElementById('data-fim');
     const btnCalcData = document.getElementById('btn-calc-data');
+    
+    // CORREÇÃO DE IDs AQUI: O HTML usa 'data-result-full', não 'data-result-text'
     const dataResultFullEl = document.getElementById('data-result-full');
     const dataResultDiasEl = document.getElementById('data-result-dias');
     const dataResultMesesEl = document.getElementById('data-result-meses');
 
-    // Função principal de cálculo de diferença de datas (em anos, meses, dias)
     function calculateDateDifference(date1Str, date2Str) {
         let d1 = new Date(date1Str + 'T00:00:00');
         let d2 = new Date(date2Str + 'T00:00:00');
         
-        if (isNaN(d1) || isNaN(d2)) {
-            return null;
-        }
+        if (isNaN(d1) || isNaN(d2)) return null;
 
-        // Garante que d2 seja a data mais recente
-        if (d1 > d2) {
-            [d1, d2] = [d2, d1];
-        }
+        if (d1 > d2) [d1, d2] = [d2, d1];
 
         let y1 = d1.getFullYear(), m1 = d1.getMonth(), day1 = d1.getDate();
         let y2 = d2.getFullYear(), m2 = d2.getMonth(), day2 = d2.getDate();
@@ -737,7 +678,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (days < 0) {
             months--;
-            // Pega o número de dias no mês anterior a d2
             const daysInMonthBefore = new Date(y2, m2, 0).getDate(); 
             days += daysInMonthBefore;
         }
@@ -747,15 +687,13 @@ document.addEventListener('DOMContentLoaded', () => {
             months += 12;
         }
 
-        // Calcula total de dias e meses para os outros resultados
         const diffTime = Math.abs(d2 - d1);
         const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const totalMonths = totalDays / 30.4375; // Média de dias por mês
+        const totalMonths = totalDays / 30.4375;
 
         return { years, months, days, totalDays, totalMonths };
     }
 
-    // Função auxiliar para converter AAAA-MM-DD para DD/MM/AAAA
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const [year, month, day] = dateString.split('-');
@@ -787,20 +725,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const diasResultText = `${diff.totalDays.toLocaleString('pt-BR')} Dias`;
             const mesesResultText = `${diff.totalMonths.toFixed(2).toLocaleString('pt-BR')} Meses`;
 
-            // EXIBIÇÃO
-            dataResultFullEl.textContent = fullResultText;
-            dataResultDiasEl.textContent = diasResultText;
-            dataResultMesesEl.textContent = mesesResultText;
+            // Correção aplicada: Usando a variável correta ligada ao ID correto
+            if (dataResultFullEl) dataResultFullEl.textContent = fullResultText;
+            if (dataResultDiasEl) dataResultDiasEl.textContent = diasResultText;
+            if (dataResultMesesEl) dataResultMesesEl.textContent = mesesResultText;
 
-            // HISTÓRICO
             const equation = `${formatDate(dataInicioStr)} até ${formatDate(dataFimStr)}`;
-            const resultHistory = fullResultText;
-            addToHistory('history-data', equation, resultHistory);
+            addToHistory('history-data', equation, fullResultText);
             
-            animateResult(dataResultDiasEl); // <--- APLICA ANIMAÇÃO
+            animateResult(dataResultDiasEl);
         });
     }
-    // --- FIM DA LÓGICA DO CALCULADOR DE DATA/IDADE ---
 
     // --- LÓGICA DO CONVERSOR DE MOEDAS (ONLINE) ---
     const moedaOrigemSelect = document.getElementById('moeda-origem-select');
@@ -809,7 +744,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const moedaValorOrigemEl = document.getElementById('moeda-valor-origem');
     const moedaResultadoEl = document.getElementById('moeda-resultado');
-
+    const infoTextEl = document.getElementById('moeda-info');
 
     if(btnCalcMoedas) {
         btnCalcMoedas.addEventListener('click', async () => {
@@ -819,51 +754,41 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (isNaN(valor) || valor <= 0) {
                 alert('Por favor, insira um valor válido para conversão.');
-                moedaResultadoEl.textContent = formatCurrency(0);
-                moedaValorOrigemEl.textContent = `0.00 ${moeda}`;
                 return;
             }
 
-            // UI: Feedback de carregamento
-            btnCalcMoedas.textContent = 'Buscando cotação...';
+            btnCalcMoedas.textContent = 'Buscando...';
             btnCalcMoedas.classList.add('loading');
             btnCalcMoedas.disabled = true;
 
             try {
-                // Busca a cotação na AwesomeAPI
                 const response = await fetch(`https://economia.awesomeapi.com.br/last/${moeda}-BRL`);
                 
                 if (!response.ok) throw new Error('Falha na requisição');
 
                 const data = await response.json();
                 const key = `${moeda}BRL`;
-                const taxa = parseFloat(data[key].bid); // 'bid' é o valor de compra
+                const taxa = parseFloat(data[key].bid); 
 
                 const valorBRL = valor * taxa;
 
-                // EXIBIÇÃO
                 moedaValorOrigemEl.textContent = `${valor.toFixed(2).toLocaleString('pt-BR')} ${moeda}`;
                 moedaResultadoEl.textContent = formatCurrency(valorBRL);
 
-                // HISTÓRICO
                 const equation = `${valor.toFixed(2)} ${moeda} (${moedaLabel})`;
                 const resultHistory = formatCurrency(valorBRL);
                 
                 addToHistory('history-moedas', equation, resultHistory);
-                
                 animateResult(moedaResultadoEl);
 
             } catch (error) {
                 console.error("Erro ao buscar cotação:", error);
                 alert("Não foi possível obter a cotação atualizada. Verifique sua internet.");
             } finally {
-                // Restaura o botão
                 btnCalcMoedas.textContent = 'Buscar Cotação e Converter';
                 btnCalcMoedas.classList.remove('loading');
                 btnCalcMoedas.disabled = false;
             }
         });
     }
-    // --- FIM DA LÓGICA DO CONVERSOR DE MOEDAS ---
-
 });
