@@ -533,7 +533,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DO GERADOR DE GORJETA E DIVISÃO ---
-    // CORREÇÃO: Variáveis agora declaradas corretamente antes do uso
+    
+    // CORREÇÃO: Declarando as variáveis corretamente AQUI, antes de serem usadas
     const contaValorInput = document.getElementById('conta-valor');
     const numPessoasInput = document.getElementById('num-pessoas');
     
@@ -552,6 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(btnCalcGorjeta) {
         btnCalcGorjeta.addEventListener('click', () => {
+            // Agora as variáveis 'contaValorInput' e 'numPessoasInput' existem neste escopo!
             const contaValor = parseFloat(contaValorInput.value.replace(',', '.')) || 0;
             const numPessoas = parseInt(numPessoasInput.value) || 1;
             const gorjetaPerc = parseInt(gorjetaPercSlider.value) || 0;
