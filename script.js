@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatResultText(historyId, result) {
         let resultText = ` = ${result}`;
+        
         if (historyId === 'history-gorjeta') {
             resultText = `Pessoa: ${result}`;
         } else if (historyId === 'history-juros') {
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (historyId === 'history-moedas') { 
              resultText = `Convertido: ${result}`;
         } else if (historyId === 'history-senha') {
-             // NOVO: Formatação específica para a senha
+             // NOVO: Formatação específica para senha (sem o sinal de igual)
              resultText = `: ${result}`;
         }
         return resultText;
@@ -78,7 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let resultText = formatResultText(historyId, result);
 
-        item.innerHTML = `<div class="equation">${equation}</div><div class="result-history">${resultText}</div>`;
+        // Cria o item do histórico. Se for senha, adiciona classe para permitir quebra de linha se necessário
+        item.innerHTML = `<div class="equation">${equation}</div><div class="result-history" style="word-break: break-all;">${resultText}</div>`;
+        
         if (historyList.firstChild) {
             historyList.insertBefore(item, historyList.firstChild);
         } else {
@@ -101,8 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function clearHistory(historyId) {
         const historyList = document.getElementById(historyId);
-        historyList.innerHTML = '<p class="history-empty">Nenhum cálculo registrado.</p>';
-        localStorage.removeItem(historyId);
+        if(historyList) {
+            historyList.innerHTML = '<p class="history-empty">Nenhum cálculo registrado.</p>';
+            localStorage.removeItem(historyId);
+        }
     }
 
     function loadHistory(historyId) {
@@ -145,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let resultText = formatResultText(historyId, result);
 
-        item.innerHTML = `<div class="equation">${equation}</div><div class="result-history">${resultText}</div>`;
+        item.innerHTML = `<div class="equation">${equation}</div><div class="result-history" style="word-break: break-all;">${resultText}</div>`;
         if (clickAction) {
             item.addEventListener('click', clickAction);
         }
@@ -182,7 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
             const historyId = button.dataset.historyId;
             if (historyId) {
-                clearHistory(historyId);
+                if(confirm('Tem certeza que deseja limpar este histórico?')) {
+                    clearHistory(historyId);
+                }
             }
         });
     });
@@ -322,7 +329,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- CARREGAR HISTÓRICOS ---
+    // --- CARREGAR HISTÓRICOS AO INICIAR ---
+    // NOVO: Adicionado 'history-senha' na lista de carregamento
     const historyIds = ['history-padrao', 'history-porcentagem', 'history-conversor', 'history-imc', 'history-gorjeta', 'history-juros', 'history-combustivel', 'history-data', 'history-moedas', 'history-senha'];
     historyIds.forEach(id => loadHistory(id));
     
@@ -440,7 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA DO GERADOR DE SENHA (CORRIGIDO) ---
+    // --- LÓGICA DO GERADOR DE SENHA (ATUALIZADO) ---
     const passResultInput = document.getElementById('pass-result');
     const passLengthSlider = document.getElementById('pass-length');
     const passLengthValue = document.getElementById('pass-length-value');
@@ -475,7 +483,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if(passFeedback) passFeedback.textContent = '';
             passResultInput.style.borderColor = 'var(--text-secondary)'; 
 
-            // Verifica quais checkboxes estão marcados
             if (passUpperCheck && passUpperCheck.checked) charset += charsets.upper;
             if (passLowerCheck && passLowerCheck.checked) charset += charsets.lower;
             if (passNumbersCheck && passNumbersCheck.checked) charset += charsets.numbers;
@@ -503,9 +510,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             password = password.split('').sort(() => 0.5 - Math.random()).join('');
             passResultInput.value = password;
-            
-            // NOVO: Adiciona mensagem ao histórico (Senha Gerada + Senha)
-            addToHistory('history-senha', `Senha Gerada (${length} chars)`, password);
+
+            // NOVO: Salva a senha gerada no histórico
+            addToHistory('history-senha', `Gerada (${length} carac.)`, password);
         });
     }
 
