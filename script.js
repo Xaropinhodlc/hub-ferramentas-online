@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatResultText(historyId, result) {
         let resultText = ` = ${result}`;
-        
         if (historyId === 'history-gorjeta') {
             resultText = `Pessoa: ${result}`;
         } else if (historyId === 'history-juros') {
@@ -59,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (historyId === 'history-moedas') { 
              resultText = `Convertido: ${result}`;
         } else if (historyId === 'history-senha') {
-             // NOVO: Formatação específica para senha (sem o sinal de igual)
              resultText = `: ${result}`;
         }
         return resultText;
@@ -79,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let resultText = formatResultText(historyId, result);
 
-        // Cria o item do histórico. Se for senha, adiciona classe para permitir quebra de linha se necessário
+        // Estilo inline para permitir quebra de linha em senhas longas
         item.innerHTML = `<div class="equation">${equation}</div><div class="result-history" style="word-break: break-all;">${resultText}</div>`;
         
         if (historyList.firstChild) {
@@ -104,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function clearHistory(historyId) {
         const historyList = document.getElementById(historyId);
-        if(historyList) {
+        if (historyList) {
             historyList.innerHTML = '<p class="history-empty">Nenhum cálculo registrado.</p>';
             localStorage.removeItem(historyId);
         }
@@ -329,8 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- CARREGAR HISTÓRICOS AO INICIAR ---
-    // NOVO: Adicionado 'history-senha' na lista de carregamento
+    // --- CARREGAR HISTÓRICOS ---
     const historyIds = ['history-padrao', 'history-porcentagem', 'history-conversor', 'history-imc', 'history-gorjeta', 'history-juros', 'history-combustivel', 'history-data', 'history-moedas', 'history-senha'];
     historyIds.forEach(id => loadHistory(id));
     
@@ -448,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA DO GERADOR DE SENHA (ATUALIZADO) ---
+    // --- LÓGICA DO GERADOR DE SENHA ---
     const passResultInput = document.getElementById('pass-result');
     const passLengthSlider = document.getElementById('pass-length');
     const passLengthValue = document.getElementById('pass-length-value');
@@ -497,7 +494,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Garante pelo menos um de cada
             if (passUpperCheck && passUpperCheck.checked) password += charsets.upper[Math.floor(Math.random() * charsets.upper.length)];
             if (passLowerCheck && passLowerCheck.checked) password += charsets.lower[Math.floor(Math.random() * charsets.lower.length)];
             if (passNumbersCheck && passNumbersCheck.checked) password += charsets.numbers[Math.floor(Math.random() * charsets.numbers.length)];
@@ -510,8 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             password = password.split('').sort(() => 0.5 - Math.random()).join('');
             passResultInput.value = password;
-
-            // NOVO: Salva a senha gerada no histórico
+            
             addToHistory('history-senha', `Gerada (${length} carac.)`, password);
         });
     }
@@ -538,6 +533,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DO GERADOR DE GORJETA E DIVISÃO ---
+    // CORREÇÃO: Variáveis agora declaradas corretamente antes do uso
+    const contaValorInput = document.getElementById('conta-valor');
+    const numPessoasInput = document.getElementById('num-pessoas');
+    
     const gorjetaPercSlider = document.getElementById('gorjeta-perc');
     const gorjetaPercValue = document.getElementById('gorjeta-perc-value');
     const btnCalcGorjeta = document.getElementById('btn-calc-gorjeta');
