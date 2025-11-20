@@ -1,101 +1,68 @@
-# ⚙️ Hub de Ferramentas Online
+# ⚙️ Hub de Ferramentas Profissional
 
-[![Status do Projeto](https://img.shields.io/badge/Status-Concluído-brightgreen)](URL_DA_DEMO_AQUI)
-[![Tecnologias](https://img.shields.io/badge/Tecnologias-HTML%20%7C%20CSS%20%7C%20JS-orange)](./)
-[![Licença MIT](https://img.shields.io/badge/Licença-MIT-blue)](LICENSE)
+![Status do Projeto](https://img.shields.io/badge/Status-Concluído-brightgreen)
+![Tecnologias](https://img.shields.io/badge/Tech-HTML5%20%7C%20CSS3%20%7C%20ES6+-blue)
+![API](https://img.shields.io/badge/API-AwesomeAPI-orange)
 
-<br>
+> Uma suíte completa de utilidades web com design moderno, cotações em tempo real e experiência mobile nativa.
 
-## 🖼️ Visão Geral
-
-![Placeholder para a Imagem de Prévia](https://xaropinhodlc.github.io/hub-ferramentas-online/Preview.png) 
-
-O **Hub de Ferramentas Online** é uma suíte completa de utilidades e calculadoras desenvolvida para ser rápida, responsiva e visualmente agradável. O projeto adota o design moderno **Neumorphism** e oferece um **Modo Escuro (Dark Mode)** instantâneo para melhor ergonomia visual.
-
-Todas as ferramentas são acessíveis através de uma navegação por abas intuitiva e mantêm um histórico local (localStorage) para referência rápida de cálculos anteriores.
+<div align="center">
+  <img src="https://xaropinhodlc.github.io/hub-ferramentas-online/Preview.png" alt="Preview do Hub de Ferramentas" width="100%">
+</div>
 
 <br>
 
-## ✨ Principais Funcionalidades
+## 🚀 Sobre o Projeto
 
-* **Design Neumorphic & Responsivo:** Interface moderna, limpa e que se adapta perfeitamente a qualquer dispositivo (desktop, tablet ou mobile).
-* **Dark Mode Integrado:** Alternância simples entre temas Claro e Escuro, com persistência de preferência.
-* **Histórico de Uso:** Painel lateral que armazena os cálculos recentes de cada ferramenta individualmente.
-* **Acessibilidade (A11Y):** Implementação de atributos ARIA para melhor navegação e compatibilidade com leitores de tela.
+O **Hub de Ferramentas Online** é uma aplicação web Single Page Application (SPA) que reúne 10 calculadoras e conversores essenciais em uma única interface.
 
-<br>
+O projeto foi desenvolvido com foco em **UX/UI** (User Experience/User Interface), utilizando o estilo **Neumorphism** e oferecendo um **Modo Escuro (Dark Mode)** de alto contraste. Diferente de conversores comuns, este hub consome dados em tempo real via API e possui um sistema de histórico local persistente.
 
-## 🛠️ Ferramentas Disponíveis
+## ✨ Funcionalidades Principais
 
-O hub conta com uma coleção robusta de utilidades, todas implementadas com lógica pura JavaScript (Vanilla JS):
+* **💵 Câmbio em Tempo Real:** Integração com a **AwesomeAPI** para fornecer taxas de câmbio atualizadas (USD, EUR, BTC, etc.) via `fetch/async/await`.
+* **📱 Layout Mobile-First (App-like):** Em dispositivos móveis, a barra lateral se transforma automaticamente em uma navegação horizontal deslizante (scrollable tabs), similar a aplicativos nativos.
+* **🌙 Dark Mode Automático:** Alternância de temas com persistência de preferência do usuário via `localStorage`.
+* **💾 Histórico Local:** Cada ferramenta salva seu histórico de cálculos no navegador do usuário, permitindo consulta posterior mesmo após recarregar a página.
+* **⌨️ Acessibilidade e Usabilidade:** Suporte total a navegação por teclado, correção de bugs de foco e feedback visual (animações de pulso) nos resultados.
 
-| Categoria | Ferramenta | Descrição |
-| :--- | :--- | :--- |
-| **Básico** | Calculadora Padrão | Suporte a operações básicas (+, -, *, /) e parênteses. |
-| **Finanças** | Porcentagem | Cálculo de X% de Y, ou X é qual porcentagem de Y. |
-| **Finanças** | Divisão/Gorjeta | Calcula gorjeta e divide o valor total da conta entre várias pessoas. |
-| **Finanças** | Juros Compostos | Simulação de investimento com capital inicial e aportes mensais. |
-| **Finanças** | Conversor de Moedas | Converte valores de moedas estrangeiras (USD, EUR, GBP, JPY) para BRL (taxas fixas). |
-| **Saúde** | Calculadora IMC | Calcula o Índice de Massa Corporal e fornece a classificação da OMS. |
-| **Viagem** | Consumo Combustível | Estima os litros necessários e o custo total de uma viagem. |
-| **Utilidades** | Gerador de Senha | Cria senhas seguras e aleatórias com opções de personalização. |
-| **Utilidades** | Conversor de Unidades | Converte entre unidades métricas e imperiais (Km/Milhas, Kg/Libras, Cm/Polegadas). |
-| **Utilidades** | Data/Idade | Calcula a diferença exata entre duas datas em anos, meses e dias. |
+## 🛠️ Ferramentas Incluídas
 
-<br>
+1.  **Calculadora Padrão:** Operações matemáticas básicas com histórico de expressões.
+2.  **Conversor de Moedas:** Cotações reais via API externa.
+3.  **Calculadora de Porcentagem:** Cálculos de "X% de Y" e "X é quantos % de Y".
+4.  **Gerador de Senhas:** Criação de senhas fortes com critérios personalizáveis e cópia rápida.
+5.  **Conversor de Unidades:** Medidas métricas e imperiais (Distância e Peso).
+6.  **Calculadora IMC:** Cálculo de índice de massa corporal com tabela da OMS.
+7.  **Juros Compostos:** Simulação de investimentos com aportes mensais.
+8.  **Divisão de Conta/Gorjeta:** Calcula o valor por pessoa em restaurantes.
+9.  **Consumo de Combustível:** Estimativa de custo e litros para viagens.
+10. **Data e Idade:** Cálculo preciso de diferença entre datas em anos, meses e dias.
 
 ## 💻 Tecnologias Utilizadas
 
-O projeto é baseado em tecnologias web front-end padrão:
+O projeto foi construído utilizando **Vanilla JavaScript** (sem frameworks) para demonstrar domínio dos fundamentos da web:
 
-| Tecnologia | Finalidade |
-| :--- | :--- |
-| **HTML5** | Estrutura e marcação semântica. |
-| **CSS3** | Estilização Neumorphic, layout responsivo e Modo Escuro. |
-| **JavaScript** | Lógica de todas as calculadoras e gerenciamento de estado (abas, histórico, tema). |
+* **HTML5 Semântico:** Estrutura otimizada e uso de tags Open Graph (SEO).
+* **CSS3 Moderno:** Uso extensivo de variáveis CSS (`:root`), Flexbox, CSS Grid e Media Queries para responsividade avançada.
+* **JavaScript (ES6+):**
+    * Manipulação avançada do DOM.
+    * Consumo de APIs RESTful (`fetch`).
+    * Programação Assíncrona (`async/await`, `try/catch`).
+    * Gerenciamento de Estado Local (`localStorage`).
 
-<br>
+## 🚀 Como Executar
 
-## 🚀 Como Acessar e Usar
-
-### Demonstração Online
-
-O projeto está hospedado gratuitamente através do GitHub Pages e pode ser acessado diretamente:
-
-🔗 **[Acesse o Hub de Ferramentas aqui!(https://xaropinhodlc.github.io/hub-ferramentas-online/)**
+### Acesso Online
+O projeto está hospedado e pode ser acessado diretamente:
+🔗 **[Acesse o Hub de Ferramentas aqui](https://xaropinhodlc.github.io/hub-ferramentas-online/)**
 
 ### Execução Local
-
-Se você deseja rodar o projeto em sua máquina:
-
-1.  **Clone o repositório:**
+1.  Clone o repositório:
     ```bash
     git clone [https://github.com/Xaropinhodlc/hub-ferramentas-online.git](https://github.com/Xaropinhodlc/hub-ferramentas-online.git)
     ```
-2.  **Navegue até a pasta:**
-    ```bash
-    cd hub-ferramentas-online
-    ```
-3.  **Abra o arquivo:**
-    Abra o arquivo `index.html` diretamente em seu navegador (Chrome, Firefox, etc.).
-
-<br>
-
-## 🤝 Contribuição
-
-Contribuições, sugestões e relatórios de bugs são muito bem-vindos!
-
-1.  Faça um Fork do projeto.
-2.  Crie uma branch para sua funcionalidade (`git checkout -b feature/NovaCalculadora`).
-3.  Commit suas alterações (`git commit -m 'feat: Adiciona calculadora de...`).
-4.  Envie para o branch original (`git push origin feature/NovaCalculadora`).
-5.  Abra um Pull Request.
-
-<br>
-
-## 📜 Licença
-
-Este projeto está sob a licença [MIT](https://opensource.org/licenses/MIT).
+2.  Abra o arquivo `index.html` no seu navegador.
 
 ---
-**Desenvolvido por: Xaropinhodlc**
+**Desenvolvido por [Xaropinhodlc]**
