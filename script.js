@@ -77,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let resultText = formatResultText(historyId, result);
 
-        // Estilo inline para permitir quebra de linha em senhas longas
         item.innerHTML = `<div class="equation">${equation}</div><div class="result-history" style="word-break: break-all;">${resultText}</div>`;
         
         if (historyList.firstChild) {
@@ -86,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
             historyList.appendChild(item);
         }
 
-        // Salvar no LocalStorage
         try {
             const rawHistory = localStorage.getItem(historyId);
             const historyItems = rawHistory ? JSON.parse(rawHistory) : [];
@@ -165,20 +163,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
+            // Remove ativo de todos
             navLinks.forEach(t => {
                 t.classList.remove('active');
                 t.setAttribute('aria-selected', 'false');
             });
             contents.forEach(c => c.classList.remove('active'));
 
+            // Ativa o clicado
             link.classList.add('active');
             link.setAttribute('aria-selected', 'true');
             
             const contentId = link.getAttribute('data-tab'); 
             const contentEl = document.getElementById(contentId);
             if (contentEl) contentEl.classList.add('active');
+
+            // NOVO: Fecha o menu automaticamente no celular ao selecionar
+            if (window.innerWidth <= 768) {
+                document.body.classList.remove('sidebar-open');
+            }
         });
     });
+
+    // --- NOVO: LÓGICA DO MENU HAMBURGER (MOBILE) ---
+    const menuToggle = document.getElementById('menu-toggle');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-open');
+        });
+    }
 
     // --- LÓGICA DE LIMPAR HISTÓRICO ---
     document.querySelectorAll('.clear-history-btn').forEach(button => {
@@ -494,6 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Garante pelo menos um de cada
             if (passUpperCheck && passUpperCheck.checked) password += charsets.upper[Math.floor(Math.random() * charsets.upper.length)];
             if (passLowerCheck && passLowerCheck.checked) password += charsets.lower[Math.floor(Math.random() * charsets.lower.length)];
             if (passNumbersCheck && passNumbersCheck.checked) password += charsets.numbers[Math.floor(Math.random() * charsets.numbers.length)];
@@ -533,8 +547,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DO GERADOR DE GORJETA E DIVISÃO ---
-    
-    // CORREÇÃO: Declarando as variáveis corretamente AQUI, antes de serem usadas
     const contaValorInput = document.getElementById('conta-valor');
     const numPessoasInput = document.getElementById('num-pessoas');
     
@@ -553,7 +565,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(btnCalcGorjeta) {
         btnCalcGorjeta.addEventListener('click', () => {
-            // Agora as variáveis 'contaValorInput' e 'numPessoasInput' existem neste escopo!
             const contaValor = parseFloat(contaValorInput.value.replace(',', '.')) || 0;
             const numPessoas = parseInt(numPessoasInput.value) || 1;
             const gorjetaPerc = parseInt(gorjetaPercSlider.value) || 0;
